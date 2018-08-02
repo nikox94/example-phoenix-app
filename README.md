@@ -1,6 +1,5 @@
 # Example Phoenix app
 
-Build pipeline:
 ![build pipeline](./build_pipeline.svg)
 
 # Hello
