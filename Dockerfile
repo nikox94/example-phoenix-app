@@ -1,5 +1,4 @@
 FROM bitwalker/alpine-elixir-phoenix:latest
-ARG VERSION=0.0.1
 
 # Expose ports
 EXPOSE 8080
