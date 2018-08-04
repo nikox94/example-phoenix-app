@@ -1,5 +1,11 @@
 language: elixir
 elixir: '1.6'
 otp_release: '20.0'
+# Sudo needed for Docker
+sudo: required
+
+services:
+  - docker
+
 install: ./install-dependencies.sh
 script: ./build-script.sh
