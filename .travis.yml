@@ -1,11 +1,31 @@
+sudo: required
+
 language: elixir
 elixir: '1.6'
 otp_release: '20.0'
-# Sudo needed for Docker
-sudo: required
-
 services:
-  - docker
+- docker
+env:
+  global:
+  - IMAGE_NAME=firestarter/example-phoenix-app
+  - REGISTRY_USER=firestarter
+  # REGISTRY_PASS=...
+  - secure: teccPk538YYCxh4XyQFc7txDwWtIsYcOkSlOFCmjcbYauqxW6YrpZbwwPOhIhFXvXjD5odJGS8/3pCMPhAPes+Z2LsS6g1F+SCiG/EJWzJHYjos79EW7i1Sxzw86SdGb4sJRbzyyIWQBmLEH+HSqti4KVbbcWuQSNefmZ8W9MgNmt4obP/BwBhLvXrtu+IaQ4245KWIGJt+BvvB9GV/X/Q6cNv2LouxUtNhv7+Hr18JrACDaGfZzwqyPU5eiVb0uC4w7I86SwpQZcmKudk1bZlgs41xWhHQJzLpw9u/0XLt4bgIQdyOvXCruNAP/+D+B7I1KRaYXjZw9mwUxnsfhwwpm5NUVBwct+gfq1eQSefzbrY2pLCESv65Qf6M/HzkzOt9WqXrXyBMEWZc8KJLrQ0i6ek8nvGsfj7wljNaBe6amL96YulDt/y4te58lUN5NflILXBLhKineqYnxzm/8lscDXHH8Ce5k/7gY4jErFwT0WU1DPyC8QBk67NjyXDVT0OBl7dQapMe3h8xlpxBUD3s1ipn3gcTmJSAXO5MtZzOqJkZI5a3mAum/+7g17YFo0w4nILoN/Kv838yNZeSmzo0OIjeV/+LnPBJkF9EHijvUA6EuQjKVZ52XUbzN7YPmE83fm7++2tPZfwJ+5KJndIKz4J0Y+Sj3RVLJmZht64o=
 
-install: ./install-dependencies.sh
-script: ./build-script.sh
+install: "./install-dependencies.sh"
+before_script:
+- docker pull "$IMAGE_NAME" || true
+script:
+- "./build-script.sh"
+- docker build --pull --cache-from "$IMAGE_NAME" --tag "$IMAGE_NAME" .
+after_script:
+- docker images
+before_deploy:
+- docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
+- docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
+#- docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+deploy:
+  provider: script
+  script: docker push "${IMAGE_NAME}:latest" #&& docker push "${IMAGE_NAME}:${version}"
+  on: 
+    branch: master
