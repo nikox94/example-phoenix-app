@@ -16,6 +16,9 @@ RUN cd assets && \
 
 ADD . .
 
+# Add secret
+ADD ./config/prod.secret.exs /var/example-phoenix-app/prod.secret.exs
+
 # Run frontend build, compile, and digest assets
 RUN cd assets/ && \
     npm run deploy && \
