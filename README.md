@@ -7,6 +7,14 @@ The `prod.secret.exs` and other `*.secret.exs` files will be stored in a seprara
 
 The secrets about the location of the repo, and the credentials to access it will be encrypted secrets in Travis CI. See [here](https://docs.travis-ci.com/user/encryption-keys/) for more information.
 
+# Running
+
+You can run the app by downloading the docker container and running it locally.
+```
+docker pull firestarter/example-phoenix-app
+docker run --network=host firestarter/example-phoenix-app
+```
+
 # Hello
 
 To start your Phoenix server:
