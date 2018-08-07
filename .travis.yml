@@ -11,20 +11,10 @@ env:
   - REGISTRY_USER=firestarter
   # REGISTRY_PASS=...
   - secure: teccPk538YYCxh4XyQFc7txDwWtIsYcOkSlOFCmjcbYauqxW6YrpZbwwPOhIhFXvXjD5odJGS8/3pCMPhAPes+Z2LsS6g1F+SCiG/EJWzJHYjos79EW7i1Sxzw86SdGb4sJRbzyyIWQBmLEH+HSqti4KVbbcWuQSNefmZ8W9MgNmt4obP/BwBhLvXrtu+IaQ4245KWIGJt+BvvB9GV/X/Q6cNv2LouxUtNhv7+Hr18JrACDaGfZzwqyPU5eiVb0uC4w7I86SwpQZcmKudk1bZlgs41xWhHQJzLpw9u/0XLt4bgIQdyOvXCruNAP/+D+B7I1KRaYXjZw9mwUxnsfhwwpm5NUVBwct+gfq1eQSefzbrY2pLCESv65Qf6M/HzkzOt9WqXrXyBMEWZc8KJLrQ0i6ek8nvGsfj7wljNaBe6amL96YulDt/y4te58lUN5NflILXBLhKineqYnxzm/8lscDXHH8Ce5k/7gY4jErFwT0WU1DPyC8QBk67NjyXDVT0OBl7dQapMe3h8xlpxBUD3s1ipn3gcTmJSAXO5MtZzOqJkZI5a3mAum/+7g17YFo0w4nILoN/Kv838yNZeSmzo0OIjeV/+LnPBJkF9EHijvUA6EuQjKVZ52XUbzN7YPmE83fm7++2tPZfwJ+5KJndIKz4J0Y+Sj3RVLJmZht64o=
-  # GH secrets repo https://github...
-  # REPO_NAME=https://....
-  - secure: "Z2liTQu/xDxENff1c3UL4IN0sD9GQcM+jx9IVmf4+PTsXFv6T6qbevj0kvUk6uxxWWB3iuB2zumYuaRNhyn7XX8fFAW1htSrGvaStJiAMxm5WerL8ylHnMYFUkY9k81gtVEVuY+DznvIFwj3r9xbtxbd9BR6DtJAWsxgDgjICSeuz1EqbM2itLaR8zOJRnauPqHKorC3yEe2EivhuuTvEa4LY4q5gtgdPJ9t8MDE1Y1/4vm9KWsl4pNamaqZOMGwgxZwU8VbU7BOKkJNsrABZDeoBwakwj9LyG6LZOO/S2xVtLBGMzTvYVpzxDNPhnydozmp1Pfup4P3VQCshrfrO0+zCMwfkUQ78ques5XC432Bn4Sdnnoq+sXwYyDynef5M+V85L74wujzWq2O90AHh7rd8LZ28/P2ZgKHBkbkL5hESpOvG6JkGMFvomiPl0jgqPuuOI86ofZRT/fNmNNG+PTUJhNSVmrH3y1yYT7dWWoOIx/g8uKKL1WL/xJQ4r795Az/mAX99EGT0vYAwEX7jdbD2EfqRCidyrK53x65JYGBZ59AE2H6KEe3ud7Va/yh4K+s+aOB5ojexaEYzbxevVl53q9W3whUu6lBmkqS4vmDztrAP804RPAwtD2Tjtglr9FYIc0gRqSLwP5Da4ffRvqA+HtYdil8ptFo2f/qja8="
-  # GH secrets repo name: example-phoenix-app-secrets
-  # REPO_DIR=....
-  - secure: "Easo42uqrzQX56ndSdIFUg/sz5EKc0FsmazN9vAgtYnkWxtie77P4+N5EHwYLcQnjk6AXylpOa49uW7xWtpdF1c7wJIbaKxA50vp3ws/djyL9A885buPm9Ygp4VamuCHvwFu3LL6n7UbrQdpBqp3C5RDHTAfXeG/0qvAvV5vDLb2EO7AxN6ocGshxTCMZmjSB8wgzVSlcGfTTBowkD/cctX/PYSFnz74Mb/ZUugS4Ssj94tGvcoLn9rBCcHQH2fLWUE0JmXFpb8F58fhLMFCnM5I04z6MbgzvvF5DiJPeNOvNV1AEJvYVhhW/UhQzG+g+D4WhhmBuNqiAQaIcEy7pf/psT1u9vxT/lr6D75bghFa1kBOIk+ZrYczHEN++LbwBxgbY7XEXWGi/MYya2xJDNkMXCwOjCp4NBKPCMRuni9mDpPUiWN3FLpZfuVayTYMcLo2n+pCI+6J6I9wLbSm1rox70BlSFnvDkdv7WxJihs6rlMm+7FKsP+WbqFk7MJ/oM7yXvqFt8YfGo/VAG62YaUopw6ORjRY12scyZIv9aT/Hh31zLQtW9Y9K4ABCYtBVoTSZ8WtXueDf4XgJ/Ujn++axJPHmPNIDmyXKLmDg+BdSSPxdaXt7cKpCBvjeQ6BhmNJ9TETQb3JEJ+2/xDj81Oi0yPHwahazS16A7tksuo="
-
 
 install: "./install-dependencies.sh"
 before_script:
 - docker pull "$IMAGE_NAME" || true
-- git clone "$REPO_NAME"
-- ls -la .
-- cp "$REPO_DIR"/* config/
 
 script:
 - "./build-script.sh"
