@@ -11,6 +11,16 @@ docker run --network=host firestarter/example-phoenix-app
 ```
 Visit http://localhost:8080 from your browser.
 
+*Note: you need to have a local PostgreSQL instance with user:postgres and pass:postgres*
+You can also point the image to another host using:
+```
+docker run --network=host -e DATABASE_HOST=85.121.103.12 firestarter/example-phoenix-app
+```
+Available environment variables are:
+  * DATABASE_HOST
+  * DATABASE_USER
+  * DATABASE_PASS
+
 # Hello
 
 To start your Phoenix server:
