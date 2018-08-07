@@ -58,16 +58,12 @@ config :logger, level: :info
 #
 #     config :hello, HelloWeb.Endpoint, server: true
 #
-
-# Finally import the config/prod.secret.exs
-# which should be versioned separately.
-# import_config "/var/example-phoenix-app/prod.secret.exs"
-
 # "Secrets"
 # Configure your database
 config :hello, Hello.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
+  hostname: System.get_env("DATABASE_HOST") || "localhost",
+  username: System.get_env("DATABASE_USER") || "postgres",
+  password: System.get_env("DATABASE_PASS") || "postgres",
   database: "hello_prod",
-pool_size: 15
+  pool_size: String.to_integer(System.get_env("POOL_SIZE") || "15")
