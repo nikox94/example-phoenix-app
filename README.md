@@ -2,11 +2,6 @@
 
 ![build pipeline](./build_pipeline.svg)
 
-## Adding secrets
-The `prod.secret.exs` and other `*.secret.exs` files will be stored in a seprarate private git repo named `<proj-name>-secrets`. These will be pulled by Travis and put in the `/var/<proj-name>-secrets` folder in the Docker container. Phoenix will be instructed to load them from there. **Add all your secrets in *.secret.exs**
-
-The secrets about the location of the repo, and the credentials to access it will be encrypted secrets in Travis CI. See [here](https://docs.travis-ci.com/user/encryption-keys/) for more information.
-
 # Running
 
 You can run the app by downloading the docker container and running it locally.
@@ -14,6 +9,7 @@ You can run the app by downloading the docker container and running it locally.
 docker pull firestarter/example-phoenix-app
 docker run --network=host firestarter/example-phoenix-app
 ```
+Visit http://localhost:8080 from your browser.
 
 # Hello
 
