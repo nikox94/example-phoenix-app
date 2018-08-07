@@ -1,0 +1,148 @@
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "pgsql-config"
+  namespace: "default"
+  labels:
+    app: "pgsql"
+data:
+  POSTGRES_USER: "postgres"
+  POSTGRES_PASSWORD: "postgres"
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "pgsql"
+  namespace: "default"
+  labels:
+    app: "pgsql"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "pgsql"
+  template:
+    metadata:
+      labels:
+        app: "pgsql"
+    spec:
+      containers:
+      - name: "postgres"
+        image: "postgres:alpine"
+        env:
+        - name: "POSTGRES_USER"
+          valueFrom:
+            configMapKeyRef:
+              key: "POSTGRES_USER"
+              name: "pgsql-config"
+        - name: "POSTGRES_PASSWORD"
+          valueFrom:
+            configMapKeyRef:
+              key: "POSTGRES_PASSWORD"
+              name: "pgsql-config"
+---
+apiVersion: "autoscaling/v1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "pgsql-hpa"
+  namespace: "default"
+  labels:
+    app: "pgsql"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "pgsql"
+    apiVersion: "apps/v1beta1"
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "pgsql"
+  namespace: "default"
+  labels:
+    app: "pgsql"
+spec:
+  ports:
+  - protocol: "TCP"
+    port: 5432
+  selector:
+    app: "pgsql"
+  type: "ClusterIP"
+
+# example app deploy
+---
+apiVersion: "v1"
+kind: "ConfigMap"
+metadata:
+  name: "example-elixir-config"
+  namespace: "default"
+  labels:
+    app: "example-elixir"
+data:
+  DATABASE_HOST: "pgsql"
+---
+apiVersion: "extensions/v1beta1"
+kind: "Deployment"
+metadata:
+  name: "example-elixir"
+  namespace: "default"
+  labels:
+    app: "example-elixir"
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: "example-elixir"
+  template:
+    metadata:
+      labels:
+        app: "example-elixir"
+    spec:
+      containers:
+      - name: "example-phoenix-app"
+        image: "firestarter/example-phoenix-app"
+        env:
+        - name: "DATABASE_HOST"
+          valueFrom:
+            configMapKeyRef:
+              key: "DATABASE_HOST"
+              name: "example-elixir-config"
+---
+apiVersion: "autoscaling/v1"
+kind: "HorizontalPodAutoscaler"
+metadata:
+  name: "example-elixir-hpa"
+  namespace: "default"
+  labels:
+    app: "example-elixir"
+spec:
+  scaleTargetRef:
+    kind: "Deployment"
+    name: "example-elixir"
+    apiVersion: "apps/v1beta1"
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 80
+
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  name: "example-elixir-service"
+  namespace: "default"
+  labels:
+    app: "example-elixir"
+spec:
+  ports:
+  - protocol: "TCP"
+    port: 80
+    targetPort: 8080
+  selector:
+    app: "example-elixir"
+  type: "NodePort"
+
