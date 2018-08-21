@@ -2,10 +2,10 @@
 apiVersion: "v1"
 kind: "ConfigMap"
 metadata:
-  name: "pgsql-config"
+  name: "postgres-config"
   namespace: "default"
   labels:
-    app: "pgsql"
+    app: "postgres"
 data:
   POSTGRES_USER: "postgres"
   POSTGRES_PASSWORD: "postgres"
@@ -13,19 +13,19 @@ data:
 apiVersion: "extensions/v1beta1"
 kind: "Deployment"
 metadata:
-  name: "pgsql"
+  name: "postgres"
   namespace: "default"
   labels:
-    app: "pgsql"
+    app: "postgres"
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      app: "pgsql"
+      app: "postgres"
   template:
     metadata:
       labels:
-        app: "pgsql"
+        app: "postgres"
     spec:
       containers:
       - name: "postgres"
@@ -35,43 +35,44 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: "POSTGRES_USER"
-              name: "pgsql-config"
+              name: "postgres-config"
         - name: "POSTGRES_PASSWORD"
           valueFrom:
             configMapKeyRef:
               key: "POSTGRES_PASSWORD"
-              name: "pgsql-config"
----
-apiVersion: "autoscaling/v1"
-kind: "HorizontalPodAutoscaler"
-metadata:
-  name: "pgsql-hpa"
-  namespace: "default"
-  labels:
-    app: "pgsql"
-spec:
-  scaleTargetRef:
-    kind: "Deployment"
-    name: "pgsql"
-    apiVersion: "apps/v1beta1"
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
-
+              name: "postgres-config"
+# Horizontal autoscaling group for PGSQL
+#---
+#apiVersion: "autoscaling/v1"
+#kind: "HorizontalPodAutoscaler"
+#metadata:
+#  name: "postgres-hpa"
+#  namespace: "default"
+#  labels:
+#    app: "postgres"
+#spec:
+#  scaleTargetRef:
+#    kind: "Deployment"
+#    name: "postgres"
+#    apiVersion: "apps/v1beta1"
+#  minReplicas: 1
+#  maxReplicas: 5
+#  targetCPUUtilizationPercentage: 80
+#
 ---
 apiVersion: "v1"
 kind: "Service"
 metadata:
-  name: "pgsql"
+  name: "postgres"
   namespace: "default"
   labels:
-    app: "pgsql"
+    app: "postgres"
 spec:
   ports:
   - protocol: "TCP"
     port: 5432
   selector:
-    app: "pgsql"
+    app: "postgres"
   type: "ClusterIP"
 
 # example app deploy
@@ -84,7 +85,7 @@ metadata:
   labels:
     app: "example-elixir"
 data:
-  DATABASE_HOST: "pgsql"
+  DATABASE_HOST: "postgres"
 ---
 apiVersion: "extensions/v1beta1"
 kind: "Deployment"
@@ -112,22 +113,22 @@ spec:
             configMapKeyRef:
               key: "DATABASE_HOST"
               name: "example-elixir-config"
----
-apiVersion: "autoscaling/v1"
-kind: "HorizontalPodAutoscaler"
-metadata:
-  name: "example-elixir-hpa"
-  namespace: "default"
-  labels:
-    app: "example-elixir"
-spec:
-  scaleTargetRef:
-    kind: "Deployment"
-    name: "example-elixir"
-    apiVersion: "apps/v1beta1"
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 80
+#---
+#apiVersion: "autoscaling/v1"
+#kind: "HorizontalPodAutoscaler"
+#metadata:
+#  name: "example-elixir-hpa"
+#  namespace: "default"
+#  labels:
+#    app: "example-elixir"
+#spec:
+#  scaleTargetRef:
+#    kind: "Deployment"
+#    name: "example-elixir"
+#    apiVersion: "apps/v1beta1"
+#  minReplicas: 1
+#  maxReplicas: 5
+#  targetCPUUtilizationPercentage: 80
 
 ---
 apiVersion: "v1"
@@ -144,5 +145,17 @@ spec:
     targetPort: 8080
   selector:
     app: "example-elixir"
-  type: "NodePort"
-
+  type: "ClusterIP"
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: example-elixir-ingress
+spec:
+  rules:
+  - host: talam-atman.auroville.org.in
+    http:
+      paths:
+      - backend:
+          serviceName: example-elixir-service
+          servicePort: 80
