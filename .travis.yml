@@ -30,3 +30,6 @@ deploy:
   script: docker push "${IMAGE_NAME}:latest" #&& docker push "${IMAGE_NAME}:${version}"
   on: 
     branch: master
+
+after_deploy:
+- kubectl
