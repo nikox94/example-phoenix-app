@@ -24,13 +24,15 @@ after_script:
 before_deploy:
 - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-#- docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${version}"
+- VERSION=`tr -dc 'A-F0-9' < /dev/urandom | head -c32`
+- docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${VERSION}"
 deploy:
   skip_cleanup: true
   provider: script
-  script: docker push "${IMAGE_NAME}:latest" #&& docker push "${IMAGE_NAME}:${version}"
+  script: docker push "${IMAGE_NAME}:latest" && docker push "${IMAGE_NAME}:${VERSION}"
   on: 
     branch: master
 
 after_deploy:
-- kubectl
+- kubectl version
+- echo $VERSION

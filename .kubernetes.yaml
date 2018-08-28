@@ -106,7 +106,7 @@ spec:
     spec:
       containers:
       - name: "example-phoenix-app"
-        image: "firestarter/example-phoenix-app"
+        image: "firestarter/example-phoenix-app:latest"
         env:
         - name: "DATABASE_HOST"
           valueFrom:
