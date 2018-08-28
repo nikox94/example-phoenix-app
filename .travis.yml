@@ -34,7 +34,7 @@ deploy:
     branch: master
 
 after_deploy:
-- kubectl config set-cluster talam-atman --insecure-skip-tls-verify=true --server=$VERSION
+- kubectl config set-cluster talam-atman --insecure-skip-tls-verify=true --server=$KUBE_BOT_SERVER
 - kubectl config set-credentials $KUBE_BOT_USER --token $KUBE_BOT_TOKEN
 - kubectl config set-context default-talam-atman --user $KUBE_BOT_USER --namespace default --cluster talam-atman
 - kubectl config use-context default-talam-atman
