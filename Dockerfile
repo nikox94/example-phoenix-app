@@ -7,7 +7,10 @@ ENV MIX_ENV prod
 
 # Cache elixir deps
 ADD mix.exs mix.lock ./
-RUN mix do deps.get, deps.compile --force
+RUN mix local.hex --force
+RUN mix local.rebar --force
+RUN mix deps.get
+RUN mix deps.compile
 
 # Same with npm deps
 ADD assets/package.json assets/
