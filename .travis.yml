@@ -24,7 +24,7 @@ after_script:
 before_deploy:
 - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-- VERSION=`tr -dc 'A-F0-9' < /dev/urandom | head -c32`
+- VERSION=`date '+%Y-%m-%d.%H-%M-%S'`
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${VERSION}"
 deploy:
   skip_cleanup: true
