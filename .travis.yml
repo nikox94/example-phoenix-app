@@ -40,3 +40,5 @@ after_deploy:
 - kubectl config use-context default-talam-atman
 - kubectl version
 - echo $VERSION
+- kubectl set image deployment/example-elixir example-phoenix-app=firestarter/example-phoenix-app:$VERSION
+
