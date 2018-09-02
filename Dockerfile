@@ -27,4 +27,4 @@ RUN cd assets/ && \
 
 USER default
 
-CMD ["mix", "phx.server"]
+CMD ["mix", "do", "ecto.create,", "ecto.migrate," ,"phx.server"]
