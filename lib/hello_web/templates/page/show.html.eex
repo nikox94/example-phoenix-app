@@ -1,0 +1,3 @@
+<div class="jumbotron">
+  <h2>Added user with name: <%= @name %></h2>
+</div>
