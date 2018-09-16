@@ -12,6 +12,6 @@ defmodule HelloWeb.PageController do
 
   def list(conn, _params) do
     all = Hello.Repo.all(Hello.User)
-    render conn, "all.html", all: to_string(all)
+    render conn, "all.html", all: all |> Enum.map(fn x -> x.email end)
   end
 end
