@@ -34,6 +34,8 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 Ready to run in production? Please [check our deployment guides](http://www.phoenixframework.org/docs/deployment).
 
+Note: robots.txt has been set up so ALL robots will IGNORE this website deployment.
+
 Enjoy your day!
 
 ## Learn more
