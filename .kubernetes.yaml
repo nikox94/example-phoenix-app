@@ -1,102 +1,4 @@
-# Postgresql Deploy START
-# Persistant volume
----
-kind: PersistentVolume
-apiVersion: v1
-metadata:
-  name: postgres-pv
-  labels:
-    type: local
-spec:
-  storageClassName: manual
-  capacity:
-    storage: 5G
-  accessModes:
-    - ReadWriteOnce
-  hostPath:
-    path: "/tmp/data"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  labels:
-    app: postgres
-  name: postgres-pv-claim
-spec:
-  storageClassName: manual
-  accessModes:
-  - ReadWriteOnce
-  resources:
-    requests:
-      storage: 5G
-# Postgres server deploy
----
-apiVersion: "v1"
-kind: "ConfigMap"
-metadata:
-  name: "postgres-config"
-  namespace: "default"
-  labels:
-    app: "postgres"
-data:
-  POSTGRES_USER: "postgres"
-  POSTGRES_PASSWORD: "postgres"
----
-apiVersion: "extensions/v1beta1"
-kind: "Deployment"
-metadata:
-  name: "postgres"
-  namespace: "default"
-  labels:
-    app: "postgres"
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: "postgres"
-  template:
-    metadata:
-      labels:
-        app: "postgres"
-    spec:
-      volumes:
-      - name: postgres-pv-claim
-        persistentVolumeClaim:
-          claimName: postgres-pv-claim
-      containers:
-      - name: "postgres"
-        image: "postgres:alpine"
-        volumeMounts:
-        - mountPath: /var/lib/postgresql/data
-          name: postgres-pv-claim
-        env:
-        - name: "POSTGRES_USER"
-          valueFrom:
-            configMapKeyRef:
-              key: "POSTGRES_USER"
-              name: "postgres-config"
-        - name: "POSTGRES_PASSWORD"
-          valueFrom:
-            configMapKeyRef:
-              key: "POSTGRES_PASSWORD"
-              name: "postgres-config"
----
-apiVersion: "v1"
-kind: "Service"
-metadata:
-  name: "postgres"
-  namespace: "default"
-  labels:
-    app: "postgres"
-spec:
-  ports:
-  - protocol: "TCP"
-    port: 5432
-  selector:
-    app: "postgres"
-  type: "ClusterIP"
-# Postgres deploy END
-# App deploy
+# App deploy START
 ---
 apiVersion: "v1"
 kind: "ConfigMap"
@@ -156,6 +58,10 @@ kind: Ingress
 metadata:
   name: example-elixir-ingress
 spec:
+  tls:
+    - hosts:
+      - talam-atman.auroville.org.in
+      secretName: example-tls-secret
   rules:
   - host: talam-atman.auroville.org.in
     http:
