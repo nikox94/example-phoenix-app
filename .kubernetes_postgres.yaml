@@ -4,7 +4,7 @@
 kind: PersistentVolume
 apiVersion: v1
 metadata:
-  name: postgres-pv
+  name: postgres-pv-staging # Also add all the relevant changes to make this a stand-alone DB instance (separate from prod)
   labels:
     type: local
 spec:
@@ -14,7 +14,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   hostPath:
-    path: "/tmp/data"
+    path: "/tmp/data" # Definitely change this, maybe to /tmp/staging/data or something similar
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -1,5 +1,11 @@
 sudo: required
 
+# safelist
+branches:
+  only:
+  - master
+  - dev
+
 language: elixir
 elixir: '1.6'
 otp_release: '20.0'
@@ -24,7 +30,7 @@ after_script:
 before_deploy:
 - docker login -u "$REGISTRY_USER" -p "$REGISTRY_PASS"
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:latest"
-- VERSION=`date '+%Y-%m-%d.%H-%M-%S'`
+- VERSION=$TRAVIS_BRANCH`date '+%Y-%m-%d.%H-%M-%S'`
 - docker tag "$IMAGE_NAME" "${IMAGE_NAME}:${VERSION}"
 deploy:
   skip_cleanup: true
@@ -40,5 +46,7 @@ after_deploy:
 - kubectl config use-context default-talam-atman
 - kubectl version
 - echo $VERSION
-- kubectl set image deployment/example-elixir example-phoenix-app=firestarter/example-phoenix-app:$VERSION
+- if [ "$TRAVIS_BRANCH" == "master" ]; then DEPLOY="example-elixir"; else DEPLOY="example-elixir-staging"; fi
+- echo $DEPLOY
+- kubectl set image deployment/$DEPLOY example-phoenix-app=firestarter/example-phoenix-app:$VERSION
 
